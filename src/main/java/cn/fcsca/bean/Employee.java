@@ -1,5 +1,8 @@
 package cn.fcsca.bean;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
+
 /**
   * 员工
   *
@@ -16,6 +19,7 @@ public class Employee {
     /**
      * empName 员工姓名
      */
+    @Pattern(regexp = "(^[a-zA-Z0-9_-]{6,16})|(^[\\u2E80-\\u9FFF]{2,5})",message = "用户名可以是2-5位中文或者6-16位英文和数字的组合")
     private String empName;
 
     /**
@@ -24,8 +28,9 @@ public class Employee {
     private String gender;
 
     /**
-     * email 员工邮箱
+     * email 员工邮箱 可以使用hibernate自带的邮箱验证注解@Email，也可以使用自定义
      */
+    @Pattern(regexp = "^([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z\\.]{2,6})$",message = "邮箱格式不正确！")
     private String email;
 
     /**

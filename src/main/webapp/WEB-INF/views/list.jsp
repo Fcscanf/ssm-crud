@@ -17,11 +17,11 @@
     不以/开始的相对路径，找资源，以当前资源的路径为基准，经常容易出问题。
     以/开始的相对路径，找资源，以服务器的路径为标准（http：//localhost：8080）；需要加上项目名
     --%>
-    <%--引入Jquery--%>
-    <script type="text/javascript" src="${APP_PATH}/static/js/jquery-3.3.1.min.js"></script>
     <%--引入bootstrap样式--%>
     <link href="${APP_PATH}/static/bootstrap-4.1.3-dist/css/bootstrap.css" rel="stylesheet">
-    <script href="${APP_PATH}/static/bootstrap-4.1.3-dist/js/bootstrap.js" rel="stylesheet"></script>
+    <%--引入Jquery--%>
+    <script type="text/javascript" src="${APP_PATH}/static/js/jquery-3.3.1.min.js"></script>
+    <script src="${APP_PATH}/static/bootstrap-4.1.3-dist/js/bootstrap.js" rel="stylesheet"></script>
 </head>
 <body>
 
