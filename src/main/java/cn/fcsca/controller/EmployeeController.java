@@ -5,6 +5,7 @@ import cn.fcsca.service.EmployeeService;
 import cn.fcsca.utils.MsgUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +14,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +34,34 @@ public class EmployeeController {
      */
     @Autowired
     EmployeeService employeeService;
+
+    /**
+     * 根据员工id删除员工信息 ——单个删除复合多个删除
+     * 批量删除：1-2-3
+     * 单个删除：1
+     *
+     * @param ids
+     * @return
+     * @author Fcscanf@樊乘乘
+     * @date 下午 21:47 2018-08-09 
+     */
+    @ResponseBody
+    @RequestMapping(value = "/emp/{ids}",method = RequestMethod.DELETE)
+    public MsgUtil deleteEmpById(@PathVariable("ids") String ids) {
+        if (ids.contains("-")) {
+            List<Integer> del_ids = new ArrayList<Integer>();
+            String[] str_ids = ids.split("-");
+            //组装id的集合
+            for (String s : str_ids) {
+                del_ids.add(Integer.parseInt(s));
+            }
+            employeeService.deleteBatch(del_ids);
+        } else {
+            Integer id = Integer.parseInt(ids);
+            employeeService.deleteEmpById(id);
+        }
+        return MsgUtil.success();
+    }
 
     /**
      * 更新员工信息的处理器

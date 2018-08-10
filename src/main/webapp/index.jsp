@@ -152,7 +152,7 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-10">
             <button class="btn btn-success" id="emp_add_modal_btn">新增</button>
-            <button class="btn btn-danger">删除</button>
+            <button class="btn btn-danger" id="emp_delete_all_btn">删除</button>
         </div>
     </div>
 
@@ -162,6 +162,9 @@
                 <table class="table table-hover" id="emps_table">
                     <thead>
                     <tr>
+                        <th>
+                            <input type="checkbox" id="check_all"/>
+                        </th>
                         <th>员工ID</th>
                         <th>员工姓名Empname</th>
                         <th>员工性别Gender</th>
@@ -218,6 +221,7 @@
         $("#emps_table tbody").empty();
         var emps = result.extend.pageInfo.list;
         $.each(emps,function (index, item) {
+            var checkBoxTd = $("<td><input type='checkbox' class='check_item'/></td>");
             var empIdTd = $("<td></td>").append(item.empId);
             var empNameTd = $("<td></td>").append(item.empName);
             var genderTd = $("<td></td>").append(item.gender == 'M'?"男":"女");
@@ -229,8 +233,10 @@
             editBtn.attr("edit-id", item.empId);
             var delBtn = $("<button></button>").addClass("btn btn-danger btn-sm delete_btn")
                 .append($("<span></span>").addClass("glyphicon glyphicon-trash").append("Delete"));
+            delBtn.attr("del-id", item.empId);
             var btnTd = $("<td></td>").append(editBtn).append(" ").append(delBtn);
-            $("<tr></tr>").append(empIdTd)
+            $("<tr></tr>").append(checkBoxTd)
+                .append(empIdTd)
                 .append(empNameTd)
                 .append(genderTd)
                 .append(emailTd)
@@ -470,7 +476,7 @@
     //根据ID查询员工信息
     function getEmp(id) {
         $.ajax({
-            url: "${APP_PATH}/emp/" + id,
+            url: "${APP_PATH}/emp/"+id,
             type: "GET",
             success: function (result) {
                 // console.log(result);
@@ -508,6 +514,67 @@
                 to_page(currentPage);
             }
         });
+    });
+
+    //给删除按钮添加单个删除事件
+    $(document).on("click", ".delete_btn", function () {
+        //弹出是否确认删除对话框
+        // alert($(this).parents("tr").find("td:eq(1)").text());
+        var empName = $(this).parents("tr").find("td:eq(2)").text();
+        var empId = $(this).attr("del-id");
+        if (confirm("确认删除【" + empName + "】吗？")) {
+            //确认，发送ajax请求到后台删除即可
+            $.ajax({
+                url: "${APP_PATH}/emp/"+empId,
+                type: "DELETE",
+                success: function (result) {
+                    alert(result.msg);
+                    //删除完成回到本页
+                    to_page(currentPage);
+                }
+            });
+        }
+    });
+
+    //全选/全不选
+    $("#check_all").click(function () {
+        //attr获取自定义属性的值；
+        //prop修改和读取dom原生属性的值
+        $(".check_item").prop("checked", $(this).prop("checked"));
+    })
+
+    //单选选满自动选择全选
+    $(document).on("click",".check_item",function () {
+        //判断当前选择的是否满足当前页元素个数
+        var flag = $(".check_item:checked").length==$(".check_item").length;
+        $("#check_all").prop("checked",flag);
+    })
+
+    //点击批量删除按钮
+    $("#emp_delete_all_btn").click(function () {
+        var empNames = "";
+        var del_idstr = "";
+        $.each($(".check_item:checked"), function () {
+            empNames += $(this).parents("tr").find("td:eq(2)").text() + ",";
+            //组装员工id
+            del_idstr += $(this).parents("tr").find("td:eq(1)").text() + "-";
+        });
+        //去除empNames多余的”，“
+        empNames = empNames.substring(0, empNames.length - 1);
+        //去除员工id组装多余的”-“
+        del_idstr = del_idstr.substring(0, del_idstr.length - 1);
+        if (confirm("确认删除【" + empNames + "】吗？")) {
+            //发送ajax请求进行删除
+            $.ajax({
+                url: "${APP_PATH}/emp/"+del_idstr,
+                type: "DELETE",
+                success: function (result) {
+                    alert(result.msg);
+                    //回到当前页
+                    to_page(currentPage);
+                }
+            });
+        }
     });
 
 </script>

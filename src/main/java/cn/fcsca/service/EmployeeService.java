@@ -88,4 +88,32 @@ public class EmployeeService {
     public void updateEmp(Employee employee) {
         employeeMapper.updateByPrimaryKeySelective(employee);
     }
+
+    /**
+     * 根据员工ID进行有选择的删除 
+     *
+     * @param id
+     * @return void
+     * @author Fcscanf@樊乘乘
+     * @date 下午 21:49 2018-08-09 
+     */
+    public void deleteEmpById(Integer id) {
+        employeeMapper.deleteByPrimaryKey(id);
+    }
+
+    /**
+     * 对员工进行批量删除操作 
+     *
+     * @param ids
+     * @return void
+     * @author Fcscanf@樊乘乘
+     * @date 下午 23:19 2018-08-09 
+     */
+    public void deleteBatch(List<Integer> ids) {
+        EmployeeExample employeeExample = new EmployeeExample();
+        EmployeeExample.Criteria criteria = employeeExample.createCriteria();
+        //delete from *** where emp_id in(1,2,3)
+        criteria.andEmpIdIn(ids);
+        employeeMapper.deleteByExample(employeeExample);
+    }
 }
