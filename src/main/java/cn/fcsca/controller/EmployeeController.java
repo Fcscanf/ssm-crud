@@ -194,6 +194,7 @@ public class EmployeeController {
     /**
      * 获取所有员工的信息 分页显示==========这里的处理只能发生到浏览器页面，不能很好的适应多客户端IOS，Android等
      * 上面的处理以json数据发送到页面，可以适应不同的需求
+     * @RequestMapping("/emps")
      *
      * @param pn
      * @return list 返回到员工信息列表页面
@@ -201,7 +202,6 @@ public class EmployeeController {
      * @date 下午 14:42 2018-08-06
      */
 
-//    @RequestMapping("/emps")
     public String getEmps(@RequestParam(value = "pn", defaultValue = "1")Integer pn, Model model) {
         /*
         分页查询-引入分页插件方便操作
