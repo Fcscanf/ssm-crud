@@ -17,6 +17,10 @@
                 connectionURL="jdbc:mysql://localhost:3306/ssm_crud?serverTimezone=UTC"
                 userId="root"
                 password="509165">
+            <!--设置可以获取tables remarks信息-->
+            <property name="useInformationSchema" value="true"/>
+            <!--设置可以获取remarks信息-->
+            <property name="remarks" value="true"/>
         </jdbcConnection>
 
         <!-- 默认false，把JDBC DECIMAL 和 NUMERIC 类型解析为 Integer，为 true时把JDBC DECIMAL 和
